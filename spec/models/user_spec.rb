@@ -35,6 +35,13 @@ RSpec.describe User, type: :model do
     it "should be an invalid user due to blank email" do
       expect(user_with_invalid_email).to_not be_valid
     end
- 
+  end
+
+  describe "callback to capitalize name" do
+    let(:user) { User.create!(name: "bob smith", email: "bob@gmail.com", password: "password") }
+
+    it "should change first and last name to capitalized with space" do
+      expect(user).to have_attributes(name: "Bob Smith", email: "bob@gmail.com")
+    end
   end
 end
