@@ -10,6 +10,8 @@ class Post < ActiveRecord::Base
   validates :topic, presence: true
   validates :user, presence: true
 
+  after_create :send_favorite_email_new_post
+
   def up_votes
     votes.where(value: 1).count
   end
@@ -29,5 +31,10 @@ class Post < ActiveRecord::Base
   end
 
   default_scope { order('rank DESC') }
+
+  def send_favorite_email_new_post
+    favorite = user.favorites.create(post: self)
+    FavoriteMailer.new_post(favorite.user, self).deliver_now
+  end
 
 end
